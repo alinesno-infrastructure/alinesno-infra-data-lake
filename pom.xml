@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.alinesno.infra.common</groupId>
+        <artifactId>alinesno-infra-platform-parent</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <packaging>pom</packaging>
+
+    <groupId>com.alinesno.infra.smart</groupId>
+    <artifactId>alinesno-infra-data-lake-parent</artifactId>
+    <version>${revision}</version>
+
+    <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <alinesno.infra.common.version>1.2.0-SNAPSHOT</alinesno.infra.common.version>
+
+        <curator.version>5.5.0</curator.version>
+        <parquet.version>1.15.2</parquet.version> <!-- 建议与 Iceberg 兼容的版本 -->
+        <iceberg.version>1.9.2</iceberg.version>
+        <aliyun.oss.version>3.17.2</aliyun.oss.version>
+        <minio.version>8.5.3</minio.version>
+    </properties>
+
+    <modules>
+        <!-- 应用服务 -->
+        <module>alinesno-infra-data-lake-facade</module>  <!-- 接口和引用 -->
+        <module>alinesno-infra-data-lake-domain</module>  <!-- 领域服务 -->
+        <module>alinesno-infra-data-lake-adapter</module> <!-- 适配层 -->
+        <module>alinesno-infra-data-lake-storage</module> <!-- 文件存储模块 -->
+        <module>alinesno-infra-data-lake-gateway</module>  <!-- 接口服务 -->
+        <module>alinesno-infra-data-lake-client</module>  <!-- 对外引用 -->
+        <module>alinesno-infra-data-lake-quartz</module>  <!-- 定时任务服务 -->
+
+        <module>alinesno-infra-data-lake-rest</module>  <!-- 提供符合Apache Paimon REST Catalog标准的表管理API -->
+
+        <module>alinesno-infra-data-lake-boot</module>  <!-- 启动服务 -->
+
+        <!-- 前端服务
+        <module>alinesno-infra-data-lake-ui</module>
+        -->
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.apache.iceberg</groupId>
+                <artifactId>iceberg-core</artifactId>
+                <version>${iceberg.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.iceberg</groupId>
+                <artifactId>iceberg-parquet</artifactId>
+                <version>${iceberg.version}</version>
+            </dependency>
+
+            <!-- 其他依赖 -->
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-column</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-common</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-hadoop</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-encoding</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <!-- 其他 Parquet 模块 -->
+
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun.oss.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client-api</artifactId>
+                <version>3.3.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-aliyun</artifactId>
+                <version>3.4.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client-runtime</artifactId>
+                <version>3.4.1</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>
+
