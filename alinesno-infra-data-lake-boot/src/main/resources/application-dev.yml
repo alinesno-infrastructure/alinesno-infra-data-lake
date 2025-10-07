@@ -1,0 +1,118 @@
+server:
+  port: 30309
+
+# spring 配置
+spring:
+  application:
+    name: alinesno-infra-data-lake-boot
+    id: 1960517510565777408
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dev_alinesno_infra_data_lake_v100?characterEncoding=UTF-8&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: root
+    password: adminer
+    druid:
+      initial-size: 10      # 初始连接数
+      min-idle: 5          # 最小空闲连接数
+      max-active: 50       # 最大连接数
+      max-wait: 300000      # 获取连接等待超时时间(毫秒)
+      time-between-eviction-runs-millis: 60000  # 间隔多久检测一次空闲连接(毫秒)
+      min-evictable-idle-time-millis: 600000   # 连接在池中最小生存时间(毫秒)
+      validation-query: SELECT 1                # 测试连接有效性的SQL
+      test-while-idle: true                    # 空闲时是否验证连接
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000 # 1分钟，单位毫秒
+      cache-null-values: false
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+#      password: aip@local
+  devtools:
+    restart:
+      enabled: true
+
+actable:
+  table:
+    auto: update
+  model:
+    pack: com.alinesno.infra.data.lake.storage.entity;com.alinesno.infra.data.lake.entity;
+  database:
+    type: mysql
+  index:
+    prefix: alinesno_data_lake_idx_
+  unique:
+    prefix: alinesno_data_lake_uni_
+
+# sa-token配置
+sa-token:
+  token-name: Authorization
+  host-path: http://alinesno-infra-base-identity-auth-application.beta.base.infra.linesno.com
+  sso:
+    auth-url: ${sa-token.host-path}/login
+    is-http: true
+    check-ticket-url: ${sa-token.host-path}/prod-api/sso/checkTicket
+    slo-url: ${sa-token.host-path}/prod-api/sso/signout
+    get-data-url: ${sa-token.host-path}/prod-api/sso/getData
+  sign:
+    secret-key: kQwIOrYvnXmSDkwEiFngrKidMcdrgKor
+
+# wechat token
+alinesno:
+  security:
+    # 排除路径
+    excludes:
+      - /api/env/check/*
+      - /api/lake/storage/*
+      - /api/lake/ingestion/*
+      - /sso/**
+      - /api/lake/storage/download/**
+      - /api/v1/catalogs/**
+      - /logout
+  infra:
+    gateway:
+      host: http://alinesno-infra-base-gateway-proxy-application.beta.base.infra.linesno.com
+
+iceberg:
+  # 存储类型：minio或oss
+  storage-type: minio
+  storage-bucket: alinesno-datalake
+  # 数据仓库路径
+  warehouse-path: oss://${iceberg.storage-bucket}/
+  # MinIO配置
+  minio:
+    endpoint: http://192.168.1.1:9000
+    access-key: xxxx
+    secret-key: xxxx
+  # 阿里云OSS配置
+  oss:
+    endpoint: oss-cn-xx.aliyuncs.com
+    access-key-id: xxxx
+    access-key-secret: xxxx
+
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: ${iceberg.storage-type} # ${iceberg.storage-type} #默认使用的存储平台
+    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    local-plus:
+    minio:
+      - platform: minio # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: ${iceberg.minio.access-key}
+        secret-key: ${iceberg.minio.secret-key}
+        end-point: ${iceberg.minio.endpoint}
+        bucket-name: ${iceberg.storage-bucket}-file  # 用于文件存储
+        domain: ${iceberg.minio.endpoint}
+        base-path: / # 基础路径
+    aliyun-oss:
+      - platform: aliyun-oss # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: ${iceberg.oss.access-key-id}
+        secret-key: ${iceberg.oss.access-key-secret}
+        bucket-name: ${iceberg.storage-bucket}-file # 用于文件存储
+        end-point: ${iceberg.oss.endpoint}
+        domain: ${iceberg.oss.endpoint}
+        base-path:  # 基础路径
