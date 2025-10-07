@@ -1,0 +1,100 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+    	<groupId>com.alinesno.infra.smart</groupId>
+    	<artifactId>alinesno-infra-data-lake-parent</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>alinesno-infra-data-lake-adapter</artifactId>
+	<packaging>jar</packaging>
+
+    <properties>
+        <!-- 版本号 -->
+        <spring.file.storage.version>2.0.0</spring.file.storage.version>
+        <aliyun.sdk.oss.version>3.16.1</aliyun.sdk.oss.version>
+        <qiniu.java.sdk.version>7.12.1</qiniu.java.sdk.version>
+        <minio.version>8.5.2</minio.version>
+        <cos_api.version>5.6.137</cos_api.version>
+    </properties>
+
+	<dependencies>
+
+		<!-- 引用公共门面服务 -->
+		<dependency>
+			<groupId>com.alinesno.infra.smart</groupId>
+			<artifactId>alinesno-infra-data-lake-facade</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+        <dependency>
+            <groupId>org.dromara.x-file-storage</groupId>
+            <artifactId>x-file-storage-spring</artifactId>
+            <version>${spring.file.storage.version}</version>
+        </dependency>
+
+        <!-- 引入forest_starter_start -->
+        <dependency>
+            <groupId>com.dtflys.forest</groupId>
+            <artifactId>forest-spring-boot3-starter</artifactId>
+            <version>${forest.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <!-- 引入forest_starter_end -->
+
+<!--        <dependency>-->
+<!--            <groupId>org.dromara.x-file-storage</groupId>-->
+<!--            <artifactId>x-file-storage-spring</artifactId>-->
+<!--            <version>${spring.file.storage.version}</version>-->
+<!--        </dependency>-->
+
+        <!-- 腾讯云存储 -->
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+            <version>${cos_api.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okio</groupId>
+                    <artifactId>okio</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- 阿里云存储 -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun.sdk.oss.version}</version>
+        </dependency>
+
+        <!-- 七牛云存储 -->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>${qiniu.java.sdk.version}</version>
+        </dependency>
+
+        <!-- minio云存储 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-jdbc</artifactId>
+            <version>476</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
