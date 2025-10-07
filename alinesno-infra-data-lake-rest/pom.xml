@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+    	<groupId>com.alinesno.infra.smart</groupId>
+    	<artifactId>alinesno-infra-data-lake-parent</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>alinesno-infra-data-lake-rest</artifactId>
+	<packaging>jar</packaging>
+
+	<dependencies>
+
+		<!-- 引用公共门面服务 -->
+		<dependency>
+			<groupId>com.alinesno.infra.smart</groupId>
+			<artifactId>alinesno-infra-data-lake-facade</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alinesno.infra.common</groupId>
+			<artifactId>alinesno-infra-common-web-api</artifactId>
+			<version>${alinesno.infra.common.version}</version>
+		</dependency>
+
+		<!-- 扩展引入_start -->
+		<dependency>
+			<groupId>com.alinesno.infra.common</groupId>
+			<artifactId>alinesno-infra-common-extend-excel</artifactId>
+			<version>${alinesno.infra.common.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alinesno.infra.common</groupId>
+			<artifactId>alinesno-infra-common-extend-datascope</artifactId>
+			<version>${alinesno.infra.common.version}</version>
+		</dependency>
+		<!-- 扩展引入_end -->
+
+		<!-- Apache Iceberg -->
+		<dependency>
+			<groupId>org.apache.iceberg</groupId>
+			<artifactId>iceberg-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.iceberg</groupId>
+			<artifactId>iceberg-parquet</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+		</dependency>
+
+	</dependencies>
+
+</project>
