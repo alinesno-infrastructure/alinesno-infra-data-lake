@@ -8,6 +8,7 @@ import com.alinesno.infra.data.lake.properties.IcebergProperties;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.iceberg.*;
+import org.apache.iceberg.catalog.Catalog;
 import org.apache.iceberg.catalog.Namespace;
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.jdbc.JdbcCatalog;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class IcebergTableManager {
 
     @Resource(name = "jdbcIcebergCatalog")
-    private JdbcCatalog icebergCatalog;
+    private Catalog icebergCatalog;
 
     @Autowired
     private IcebergProperties icebergProperties;
@@ -288,14 +289,14 @@ public class IcebergTableManager {
      */
     public List<String> listDatabases() {
         try {
-//            if (icebergCatalog instanceof org.apache.iceberg.catalog.SupportsNamespaces namespaceCatalog) {
+            if (icebergCatalog instanceof org.apache.iceberg.catalog.SupportsNamespaces namespaceCatalog) {
 
-            List<Namespace> namespaces = icebergCatalog.listNamespaces();
+            List<Namespace> namespaces = namespaceCatalog.listNamespaces();
             return namespaces.stream()
                     .map(ns -> ns.level(0)) // 获取第一级命名空间（数据库名）
                     .toList();
-//            }
-//            return List.of();
+            }
+            return List.of();
         } catch (Exception e) {
             log.error("获取数据库列表失败", e);
             return List.of();
