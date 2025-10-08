@@ -6,6 +6,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.iceberg.CatalogProperties;
 import org.apache.iceberg.CatalogUtil;
+import org.apache.iceberg.catalog.Catalog;
+import org.apache.iceberg.hadoop.HadoopCatalog;
+import org.apache.iceberg.hive.HiveCatalog;
 import org.apache.iceberg.jdbc.JdbcCatalog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,7 +46,7 @@ public class IcebergConfig {
 
     @SneakyThrows
     @Bean(name = "jdbcIcebergCatalog")
-    public JdbcCatalog icebergCatalog() {
+    public Catalog icebergCatalog() {
 
         org.apache.hadoop.conf.Configuration hadoopConf = new org.apache.hadoop.conf.Configuration(); // configs if you use HadoopFileIO
         Class.forName(jdbcDriver); // ensure JDBC driver is at runtime classpath
@@ -72,7 +75,7 @@ public class IcebergConfig {
             configureAliyunOSS(hadoopConf);
         }
 
-        return (JdbcCatalog) CatalogUtil.buildIcebergCatalog(LakeConstants.DEFAULT_CATALOG_NAME, jdbcProperties, hadoopConf);
+        return CatalogUtil.buildIcebergCatalog(LakeConstants.DEFAULT_CATALOG_NAME, jdbcProperties, hadoopConf);
     }
 
     /**
