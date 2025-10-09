@@ -67,11 +67,16 @@
                         <i class="dire-panel-icon" :class="item.icon" :alt="item.name" />
                         {{ item.name }}
                       </div>
-                      <!-- 
                       <div class="panel-content">
-                        <div class="panel-text">{{ item.desc }}</div>
+                        <p class="catalog-description">
+                          <el-text line-clamp="2" v-if="item.desc">
+                            {{ item.desc}}
+                          </el-text>
+                          <el-text line-clamp="2" v-else>
+                            暂无描述
+                          </el-text>
+                        </p>
                       </div> 
-                      -->
                       <div class="panel-describe" >
                         <div class="metric">
                           <div class="metric-label">
@@ -89,13 +94,6 @@
                           <span class="metric-value">{{ item.storageSize || '0 GB'  }}</span>
                         </div>
 
-                        <div class="metric">
-                          <div class="metric-label">
-                            <i class="fa-regular fa-calendar"></i> <!-- 6.x 中日历图标需指定 regular 风格 -->
-                            <span>数据类型</span>
-                          </div>
-                          <span class="metric-value">{{ item.type || 'OCR' }}</span>
-                        </div>
                       </div>
                       <!-- <div class="panel-tip">访问链接</div> -->
                     </div>
@@ -371,6 +369,13 @@ nextTick(() => {
   border-radius: 8px;
   border-left: 0px !important;
   margin-top: 10px;
+}
+
+.catalog-description{
+  padding: 0px;
+  margin: 0px;
+  line-height: 1rem;
+  height:35px;
 }
 
 </style>
