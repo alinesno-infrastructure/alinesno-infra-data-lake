@@ -34,7 +34,7 @@ import java.util.List;
 @Api(tags = "ApiRecord")
 @RestController
 @Scope(SpringInstanceScope.PROTOTYPE)
-@RequestMapping("/api/infra/smart/nlp/api_record")
+@RequestMapping("/api/infra/data/lake/api_record")
 public class ApiRecordController extends BaseController<ApiRecordEntity, IApiRecordService> {
 
     // 日志记录
