@@ -9,7 +9,7 @@ import { parseStrEmpty } from "@/utils/ruoyi";
  */
 
 // 接口配置项
-var prefix = '/api/infra/smart/nlp/api_record/' ;
+var prefix = '/api/infra/data/lake/api_record/' ;
 var managerUrl = {
     datatables : prefix +"datatables" ,
     createUrl: prefix + 'add' ,
