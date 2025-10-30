@@ -28,6 +28,7 @@ public class IcebergProperties {
         private String endpoint;
         private String accessKey;
         private String secretKey;
+        private boolean sslEnabled = false ;
     }
 
     // 阿里云OSS配置内部类
