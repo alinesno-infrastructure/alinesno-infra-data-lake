@@ -56,7 +56,11 @@ public class StorageFileServiceImpl extends IBaseServiceImpl<StorageFileEntity, 
     public void deleteBucket(String bucketName) {
        OSSBucketService ossBucketService = getOssBucketService();
        boolean b = ossBucketService.deleteBucket(bucketName);
-       Assert.isTrue(b, "删除bucket失败");
+
+       // Assert.isTrue(b, "删除bucket失败");
+        if(!b){
+            log.warn("删除bucket失败：{}" , bucketName);
+        }
 
        log.debug("删除bucket：{}" , bucketName) ;
     }
