@@ -52,6 +52,11 @@ public class CatalogEntity extends InfraBaseEntity {
     @Column(name = "owner_id", type = MySqlTypeConstant.BIGINT , comment = "所有者ID")
     private Long ownerId;
 
+    // 所属域
+    @TableField
+    @Column(name = "domain_id", type = MySqlTypeConstant.BIGINT , comment = "所属域ID")
+    private Long domainId;
+
     @TableField
     @Column(name = "scheme_name", type = MySqlTypeConstant.VARCHAR, length = 100 , comment = "Catalog目录下面的scheme名称")
     private String schemeName;
