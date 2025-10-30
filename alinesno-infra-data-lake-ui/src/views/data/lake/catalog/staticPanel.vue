@@ -39,7 +39,7 @@ const formatNumber = (num) => {
 // 统计项配置 - 定义每个卡片的显示内容和样式
 const statsItems = computed(() => [
   {
-    label: '总存储量',
+    label: '元数据量',
     value: rawStats.value.totalStorageSize,
     trendClass: 'trend-up',
     trendIcon: 'fa fa-arrow-up',
