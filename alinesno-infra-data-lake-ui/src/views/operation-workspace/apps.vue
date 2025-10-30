@@ -89,7 +89,7 @@
                         <div class="metric">
                           <div class="metric-label">
                             <i class="fa-solid fa-database"></i> <!-- 6.x 中数据库图标类未变，但需确认使用 solid 风格 -->
-                            <span>总存储量</span>
+                            <span>元数据量</span>
                           </div>
                           <span class="metric-value">{{ item.storageSize || '0 GB'  }}</span>
                         </div>
