@@ -5,6 +5,7 @@ import com.alinesno.infra.common.facade.enable.EnableActable;
 import com.alinesno.infra.common.web.adapter.sso.enable.EnableInfraSsoApi;
 import com.alinesno.infra.common.web.log.aspect.LogAspect;
 import com.dtflys.forest.springboot.annotation.ForestScan;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.mybatis.spring.annotation.MapperScan;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 @ForestScan({
         "com.alinesno.infra.common.web.adapter.base.consumer"
 })
+@EnableEncryptableProperties
 @Configuration
 public class AppConfiguration implements CommandLineRunner  {
 
