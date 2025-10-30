@@ -230,6 +230,8 @@
                     v-if="!scope.row.isFolder"
                     icon="CopyDocument" 
                     type="success"
+                    text
+                    bg
                     title="复制"
                     @click="copyLink(scope.row)"
                   ></el-button>
@@ -237,12 +239,16 @@
                     v-if="!scope.row.isFolder"
                     icon="Download" 
                     type="primary"
+                    text
+                    bg
                     title="下载"
                     @click="downloadFile(scope.row)"
                   ></el-button>
                   <el-button 
                     icon="Delete" 
                     type="danger"
+                    text
+                    bg
                     title="删除"
                     @click="deleteItem(scope.row)"
                   ></el-button>
@@ -570,7 +576,7 @@ const handleItemClick = (item) => {
 const deleteItem = async (item) => {
   try {
     await ElMessageBox.confirm(
-      `确定要${item.isFolder ? '删除文件夹"' + item.name + '"及其所有内容' : '删除文件"' + item.name + '"'}吗？`, 
+      `确定要${item.isFolder ? '删除文件夹"' + item.fileName + '"及其所有内容' : '删除文件"' + item.fileName + '"'}吗？`,
       '提示', 
       {
         confirmButtonText: '确定',
