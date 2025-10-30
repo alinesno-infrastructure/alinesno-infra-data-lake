@@ -50,7 +50,7 @@ actable:
 # sa-token配置
 sa-token:
   token-name: Authorization
-  host-path: http://alinesno-infra-base-identity-auth-application.beta.base.infra.linesno.com
+  host-path: https://alinesno-infra-base-identity-auth-application.linesno.com
   sso:
     auth-url: ${sa-token.host-path}/login
     is-http: true
@@ -70,11 +70,11 @@ alinesno:
       - /api/lake/ingestion/*
       - /sso/**
       - /api/lake/storage/download/**
-      - /api/v1/catalogs/**
+      - /api/v1/**
       - /logout
   infra:
     gateway:
-      host: http://alinesno-infra-base-gateway-proxy-application.beta.base.infra.linesno.com
+      host: https://alinesno-infra-base-gateway-proxy-application.linesno.com
 
 iceberg:
   # 存储类型：minio或oss
