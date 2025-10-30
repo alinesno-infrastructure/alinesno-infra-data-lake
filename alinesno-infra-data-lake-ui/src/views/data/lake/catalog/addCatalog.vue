@@ -8,10 +8,30 @@
         <el-dialog
             :title="formData.id ? '编辑目录' : '添加目录'"
             v-model="dialogVisible"
-            width="500px"
+            width="600px"
             :before-close="handleClose"
         >
-            <el-form ref="catalogForm" :model="formData" :rules="rules" labelPosition="top" label-width="100px">
+            <el-form ref="catalogForm" :model="formData" :rules="rules" labelPosition="top" label-width="100px"
+            size="large"
+            >
+
+                <!-- 所属业务域 -->
+                <el-form-item label="业务域" prop="domainId">
+                  <el-select
+                    v-model="formData.domainId"
+                    placeholder="请选择所属业务域"
+                    size="large"
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="option in domainOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+
                 <!-- 目录名称 -->
                 <el-form-item label="目录名称" prop="catalogName">
                     <el-input 
@@ -28,6 +48,7 @@
                         placeholder="请输入描述" 
                         type="textarea" 
                         rows="3"
+                        resize="none"
                         maxlength="500"
                     ></el-input>
                 </el-form-item>
@@ -57,6 +78,10 @@ import { ElMessage } from 'element-plus';
 
 import FontAwesomeIconPicker from '@/components/FontAwesomeIconPicker/index.vue';
 
+import {
+    listEnabledDomains
+} from '@/api/data/lake/domain'
+
 // 导入创建和更新接口
 import { 
     createCatalog,
@@ -77,6 +102,9 @@ const formData = reactive({
     icon: ''          // 图标
 });
 
+// 业务域下拉选项
+const domainOptions = ref([]);
+
 // 表单验证规则
 const rules = reactive({
     catalogName: [
@@ -88,7 +116,10 @@ const rules = reactive({
     ],
     icon: [
         { max: 50, message: '图标标识不能超过50个字符', trigger: 'blur' }
-    ]
+    ],
+    domainId: [
+        { required: true, message: '请选择业务域', trigger: 'change' }
+      ]
 });
 
 // 表单引用
@@ -180,6 +211,27 @@ const submitForm = async () => {
         loading.value = false;
     }
 };
+
+// 初始化时加载业务域数据（与添加/编辑弹窗逻辑兼容）
+const loadDomainOptions = async () => {
+  try {
+    const res = await listEnabledDomains();
+    if (res.code === 200) {
+      // 格式化选项为 el-select 所需格式（label 显示名称，value 绑定 domainId）
+      domainOptions.value = res.data.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+    }
+  } catch (error) {
+    console.error('加载业务域失败:', error);
+    ElMessage.error('加载业务域选项失败，请刷新重试');
+  }
+};
+
+nextTick(() => {
+  loadDomainOptions();
+});
 
 // 暴露方法给父组件调用
 defineExpose({
