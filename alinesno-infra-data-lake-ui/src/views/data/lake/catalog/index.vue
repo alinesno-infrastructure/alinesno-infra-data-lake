@@ -62,7 +62,7 @@
                 <div class="metric">
                   <div class="metric-label">
                     <i class="fa-solid fa-database"></i> <!-- 6.x 中数据库图标类未变，但需确认使用 solid 风格 -->
-                    <span>总存储量</span>
+                    <span>元数据量</span>
                   </div>
                   <span class="metric-value">{{ catalog.storageSize }}</span>
                 </div>
@@ -290,13 +290,15 @@ onMounted(() => {
 }
 
 .catalog-icon {
-  // width: 38px;
-  height: 38px;
-  border-radius: 8px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      height: 30px;
+      border-radius: 5px;
+      width: 30px;
+      color: #fff;
+      background: #409eff;
 }
 
 .catalog-menu {
@@ -364,7 +366,6 @@ onMounted(() => {
 
 .catalog-footer {
   padding: 8px 24px;
-  background-color: #f9fafb;
   border-top: 1px solid #f3f4f6;
   display: flex;
   justify-content: space-between;
