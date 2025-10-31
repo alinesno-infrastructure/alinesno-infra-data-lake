@@ -1,6 +1,5 @@
 package com.alinesno.infra.data.lake.service.impl;
 
-import cn.hutool.core.util.IdUtil;
 import com.alinesno.infra.common.core.service.impl.IBaseServiceImpl;
 import com.alinesno.infra.data.lake.api.CreateCatalogTableDto;
 import com.alinesno.infra.data.lake.api.TableFieldDto;
@@ -12,6 +11,7 @@ import com.alinesno.infra.data.lake.mapper.CatalogTableMapper;
 import com.alinesno.infra.data.lake.service.ICatalogTableService;
 import com.alinesno.infra.data.lake.service.IStorageFileService;
 import com.alinesno.infra.data.lake.utils.InitRawMetaUtils;
+import com.alinesno.infra.data.lake.utils.NamespaceIdUtils;
 import com.alinesno.infra.data.lake.utils.SyncTableUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,7 @@ public class CatalogTableServiceImpl extends IBaseServiceImpl<CatalogTableEntity
             directory.setOrgId(orgId);
 
             // 每个层级创建对应的数据库
-            String schemeCode = IdUtil.getSnowflakeNextIdStr() ;
+            String schemeCode =NamespaceIdUtils.getId() ; // IdUtil.getSnowflakeNextIdStr() ;
             icebergTableUtils.createScheme(icebergTableUtils.getSchemeName(schemeCode));
             directory.setSchemeName(schemeCode);
 
@@ -208,7 +208,7 @@ public class CatalogTableServiceImpl extends IBaseServiceImpl<CatalogTableEntity
         }
 
         // 每个层级创建对应的数据库
-        String schemeCode = IdUtil.getSnowflakeNextIdStr() ;
+        String schemeCode = NamespaceIdUtils.getId() ;
         icebergTableUtils.createScheme(icebergTableUtils.getSchemeName(schemeCode));
         entity.setSchemeName(schemeCode);
 
@@ -426,7 +426,7 @@ public class CatalogTableServiceImpl extends IBaseServiceImpl<CatalogTableEntity
     public TableStorageStats getTableStatistics(CatalogTableEntity entity) {
         // 检查是否为表而不是目录
         if (entity.isDirectory()) {
-            log.warn("实体 {} 是目录，不是表", entity.getTableName());
+            log.warn("实体 {} 是目录", entity.getTableName());
             return new TableStorageStats();
         }
 
