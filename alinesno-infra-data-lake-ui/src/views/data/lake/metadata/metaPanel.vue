@@ -244,8 +244,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <el-button @click="showCreateModal = false">取消</el-button>
-        <el-button type="primary" @click="handleCreate">确认创建</el-button>
+        <el-button @click="showCreateModal = false" size="large">取消</el-button>
+        <el-button type="primary" @click="handleCreate" size="large">确认创建</el-button>
       </div>
     </el-dialog>
   </div>
