@@ -96,7 +96,7 @@ public class IcebergTableUtils {
      */
     public String getSchemeName(CatalogTableEntity entity) {
         // 这里可以根据catalogId、orgId等生成数据库名称
-        return String.format("ns%s", entity.getSchemeName()) ;
+        return getSchemeName(entity.getSchemeName()) ;
     }
 
     /**
