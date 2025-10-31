@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.gitee.sunchenbin.mybatis.actable.annotation.Column;
 import com.gitee.sunchenbin.mybatis.actable.annotation.Table;
+import com.gitee.sunchenbin.mybatis.actable.annotation.Unique;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +28,10 @@ public class CatalogEntity extends InfraBaseEntity {
     @TableField
     @Column(name = "description", type = MySqlTypeConstant.VARCHAR, length = 500 , comment = "描述")
     private String description;
+
+    @TableField
+    @Column(name = "catalog_icon", type = MySqlTypeConstant.VARCHAR, length = 50 , comment = "图标")
+    private String catalogIcon ;
 
     @TableField
     @Column(name = "icon", type = MySqlTypeConstant.VARCHAR, length = 50 , comment = "图标")
@@ -59,6 +64,7 @@ public class CatalogEntity extends InfraBaseEntity {
 
     @TableField
     @Column(name = "scheme_name", type = MySqlTypeConstant.VARCHAR, length = 100 , comment = "Catalog目录下面的scheme名称")
+    @Unique
     private String schemeName;
 
     // 关联的数据表列表（非数据库字段）
