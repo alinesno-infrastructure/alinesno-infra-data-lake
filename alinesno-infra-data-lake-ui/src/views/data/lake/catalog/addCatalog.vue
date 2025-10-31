@@ -15,6 +15,26 @@
             size="large"
             >
 
+              <el-row>
+                          <el-col :span="24" class="editor-after-div">
+                            <el-form-item label="头像" prop="catalogIcon">
+                                <el-upload
+                                  :file-list="imageUrl"
+                                  :action="upload.url + '?type=img&updateSupport=' + upload.updateSupport"
+                                  list-type="picture-card"
+                                  :auto-upload="true"
+                                  :on-success="handleAvatarSuccess"
+                                  :before-upload="beforeAvatarUpload"
+                                  :headers="upload.headers"
+                                  :disabled="upload.isUploading"
+                                  :on-progress="handleFileUploadProgress"
+                                >
+                                  <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+                                </el-upload>
+                              </el-form-item>
+                          </el-col>
+                        </el-row>
+
                 <!-- 所属业务域 -->
                 <el-form-item label="业务域" prop="domainId">
                   <el-select
@@ -53,18 +73,19 @@
                     ></el-input>
                 </el-form-item>
                 
-                <!-- 图标 -->
+                <!-- 图标
                 <el-form-item label="图标" prop="icon">
                     <FontAwesomeIconPicker 
                             v-model="formData.icon" 
                             placeholder="选择一个图标"
                         />
                 </el-form-item>
+                -->
             </el-form>
             
             <template #footer>
-                <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitForm" :loading="loading">
+                <el-button @click="dialogVisible = false" size="large">取消</el-button>
+                <el-button type="primary" @click="submitForm" :loading="loading" size="large">
                     {{ loading ? '提交中...' : '确定' }}
                 </el-button>
             </template>
@@ -75,6 +96,7 @@
 <script setup>
 import { ref, reactive, defineExpose } from 'vue';
 import { ElMessage } from 'element-plus';
+import {getToken} from "@/utils/auth";
 
 import FontAwesomeIconPicker from '@/components/FontAwesomeIconPicker/index.vue';
 
@@ -93,13 +115,34 @@ const emit = defineEmits(['addSuccess', 'updateSuccess'])
 // 弹窗显示状态
 const dialogVisible = ref(false);
 const loading = ref(false);
+const imageUrl = ref([])
 
 // 表单数据
 const formData = reactive({
     id: null,
+    catalogIcon: '', // 头像
     catalogName: '',  // 目录名称
+    domainId: '' , // 业务域
     description: '',  // 描述
     icon: ''          // 图标
+});
+
+/*** 应用导入参数 */
+const upload = reactive({
+  // 是否显示弹出层（应用导入）
+  open: false,
+  // 弹出层标题（应用导入）
+  title: "",
+  // 是否禁用上传
+  isUploading: false,
+  // 是否更新已经存在的应用数据
+  updateSupport: 0,
+  // 设置上传的请求头部
+  headers: {Authorization: "Bearer " + getToken()},
+  // 上传的地址
+  url: import.meta.env.VITE_APP_BASE_API + "/v1/api/infra/base/im/chat/importData",
+  // 显示地址
+  display: import.meta.env.VITE_APP_BASE_API + "/v1/api/infra/base/im/chat/displayImage/"
 });
 
 // 业务域下拉选项
@@ -134,7 +177,10 @@ const addCatalog = () => {
     formData.id = null;
     formData.catalogName = '';
     formData.description = '';
+    formData.domainId = '';
     formData.icon = '';
+
+    imageUrl.value = []; // 清空数组
     
     // 显示弹窗
     dialogVisible.value = true;
@@ -151,8 +197,16 @@ const editCatalog = (catalogData) => {
     formData.id = catalogData.id;
     formData.catalogName = catalogData.catalogName;
     formData.description = catalogData.description || '';
+    formData.domainId = catalogData.domainId;
+    formData.catalogIcon = catalogData.catalogIcon || '';
     formData.icon = catalogData.icon || '';
     
+    const item = {
+      url: upload.display + catalogData.catalogIcon,
+    }
+    imageUrl.value = []; // 清空数组
+    imageUrl.value.push(item) ;
+
     // 显示弹窗
     dialogVisible.value = true;
 };
@@ -180,6 +234,8 @@ const submitForm = async () => {
                 id: formData.id,
                 catalogName: formData.catalogName,
                 description: formData.description,
+                catalogIcon: formData.catalogIcon,
+                domainId: formData.domainId,
                 icon: formData.icon
             });
         } else {
@@ -187,6 +243,8 @@ const submitForm = async () => {
             response = await createCatalog({
                 catalogName: formData.catalogName,
                 description: formData.description,
+                catalogIcon: formData.catalogIcon,
+                domainId: formData.domainId,
                 icon: formData.icon
             });
         }
@@ -229,6 +287,22 @@ const loadDomainOptions = async () => {
   }
 };
 
+/** 图片上传成功 */
+const handleAvatarSuccess = (response, uploadFile) => {
+  imageUrl.value = response.data ? response.data.split(',').map(url => { return { url: upload.display + url } }) : [];
+  formData.catalogIcon = response.data ;
+  console.log('formData.catalogIcon = ' + formData.catalogIcon);
+};
+
+/** 图片上传之前 */
+const beforeAvatarUpload = (rawFile) => {
+  if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!');
+    return false;
+  }
+  return true;
+};
+
 nextTick(() => {
   loadDomainOptions();
 });
@@ -242,6 +316,14 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+
+.channel-image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
 .view-btn {
     background: none;
     border: none;
@@ -267,4 +349,12 @@ defineExpose({
 ::v-deep .el-textarea__inner {
     resize: vertical;
 }
+
+::v-deep .el-upload--picture-card ,
+::v-deep  .el-upload-list__item {
+   --el-upload-picture-card-size: 85px;
+   width:85px;
+   height:85px;
+}
+
 </style>
