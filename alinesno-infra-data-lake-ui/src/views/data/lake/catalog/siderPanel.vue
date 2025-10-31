@@ -5,6 +5,11 @@
             <!-- Add All Types option -->
             <div
                 :class="{ 'active': activeItem === '' }"
+                style="
+                    background: rgb(245 247 250);
+                    height: 40px;
+                    line-height: 25px;
+                "
                 @mouseover="handleMouseOver('')"
                 @mouseout="handleMouseOut('')"
                 @click="handleClick('')">
@@ -80,8 +85,7 @@ handleListEnabledDomains();
 <style lang="scss" scoped>
 .side-type-container {
     padding: 15px;
-    width: 220px;
-    position: absolute;
+    width: 100%;
     height: 100%;
 
     .title {
@@ -97,7 +101,7 @@ handleListEnabledDomains();
         gap: 5px;
 
         div {
-            padding: 8px 5px;
+            padding: 8px 15px;
             cursor: pointer;
             border-radius: 5px;  
 
