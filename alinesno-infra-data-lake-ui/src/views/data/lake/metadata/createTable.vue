@@ -174,8 +174,8 @@
       </el-form>
 
       <template #footer>
-        <el-button @click="showCreateModal = false">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">确认</el-button>
+        <el-button @click="showCreateModal = false" size="large">取消</el-button>
+        <el-button type="primary" @click="handleConfirm" size="large">确认</el-button>
       </template>
     </el-dialog>
   </div>
