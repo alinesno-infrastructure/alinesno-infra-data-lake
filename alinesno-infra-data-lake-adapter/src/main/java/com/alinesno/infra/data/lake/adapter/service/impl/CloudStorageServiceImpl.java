@@ -117,7 +117,7 @@ public class CloudStorageServiceImpl implements CloudStorageConsumer {
 
     @Override
     public R<String> upload(File file) {
-        return upload(file , null) ;
+        return upload(file , "/") ;
     }
 
     @Override
