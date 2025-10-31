@@ -2,10 +2,10 @@
   <div class="container">
 
     <el-row>
-      <el-col :span="3">
+      <el-col :span="4">
         <SideTypePanel ref="sideTypePanelRef" @selectType="selectType" />
       </el-col>
-      <el-col :span="21">
+      <el-col :span="20">
 
         <!-- 页面标题和筛选器 -->
         <div class="header-actions-row">
@@ -34,62 +34,64 @@
           <!-- 领域卡片 - 循环渲染 -->
           <div class="catalog-card" v-for="catalog in projects" :key="catalog.id">
             <div class="catalog-card-content">
-              <p class="catalog-title" @click="enterCatalog(catalog)">
-              <div class="catalog-icon">
-                <i :class="catalog.icon"></i>
+
+              <div class="catalog-card-icon">
+                <img :src="imagePath(catalog.catalogIcon)" />
               </div>
-              {{ catalog.catalogName }}
-              </p>
 
-              <p class="catalog-description">
-                <el-text line-clamp="2" v-if="catalog.description">
-                  {{ catalog.description }}
-                </el-text>
-                <el-text line-clamp="2" v-else>
-                  暂无描述
-                </el-text>
-              </p>
+              <div class="catalog-card-panel">
 
-              <div class="catalog-metrics">
-                <div class="metric">
-                  <div class="metric-label">
-                    <i class="fa-regular fa-file-lines"></i> <!-- 替换原 fa-file-text-o -->
-                    <span>数据表数</span>
+                  <p class="catalog-title" @click="enterCatalog(catalog)">
+                  {{ catalog.catalogName }}
+                  </p>
+
+                  <div class="catalog-metrics">
+                    <div class="metric">
+                      <div class="metric-label">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span v-if="catalog.storageSize > 0">
+                            元数据量<span class="metric-value">{{ catalog.storageSize }}</span>张表
+                        </span>
+                        <span v-else>
+                            暂无元数据
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <span class="metric-value">{{ catalog.tableCount }}</span>
-                </div>
 
-                <div class="metric">
-                  <div class="metric-label">
-                    <i class="fa-solid fa-database"></i> <!-- 6.x 中数据库图标类未变，但需确认使用 solid 风格 -->
-                    <span>元数据量</span>
-                  </div>
-                  <span class="metric-value">{{ catalog.storageSize }}</span>
-                </div>
+                  <p class="catalog-description">
+                    <el-text line-clamp="2" v-if="catalog.description">
+                      {{ catalog.description }}
+                    </el-text>
+                    <el-text line-clamp="2" v-else>
+                      暂无描述
+                    </el-text>
+                  </p>
 
-                <!-- <div class="metric">
-                  <div class="metric-label">
-                    <i class="fa-regular fa-calendar"></i> 
-                    <span>最近更新</span>
-                  </div>
-                  <span class="metric-value">{{ catalog.addTime }}</span>
-                </div> -->
               </div>
 
             </div>
 
             <div class="catalog-footer">
+              <!--
               <span class="catalog-status" :class="catalog.status === '活跃' ? 'status-active' : 'status-archived'">
                 {{ catalog.status }}
               </span>
+              -->
+
+                <el-button type="info" text bg @click="handleEdit(catalog)">
+                  <i class="fa-solid fa-signature"></i>
+                  公共领域
+                </el-button>
+
               <span style="display: flex;flex-direction: row;gap: 5px;">
-                <button class="view-details" @click="handleEdit(catalog)">
+                <el-button type="primary" text bg @click="handleEdit(catalog)">
                   <i class="fa-solid fa-pen-nib"></i>
                   编辑
-                </button>
+                </el-button>
                 <el-popconfirm title="确定要删除吗？" @confirm="handleDelete(catalog)">
                   <template #reference>
-                    <el-button type="info" text bg size="small" @click.stop>
+                    <el-button type="info" text bg size="default" @click.stop>
                       <i class="fa-solid fa-trash"></i>&nbsp;删除
                     </el-button>
                   </template>
@@ -279,7 +281,30 @@ onMounted(() => {
 }
 
 .catalog-card-content {
-  padding: 14px;
+     padding: 14px;
+     display: flex;
+     gap: 10px;
+     flex-direction: row;
+
+     .catalog-card-icon {
+         position: relative;
+         width: 60px;
+         height: 60px;
+         border-radius: 10px;
+         overflow: hidden;
+         cursor: pointer;
+         img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+         }
+     }
+
+     .catalog-card-panel {
+         width: calc(100% - 70px);
+     }
+
 }
 
 .catalog-header {
@@ -333,7 +358,7 @@ onMounted(() => {
   overflow: hidden;
   display: flex;
   gap: 10px;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-bottom: 10px;
   height: 35px;
 }
@@ -365,7 +390,7 @@ onMounted(() => {
 }
 
 .catalog-footer {
-  padding: 8px 24px;
+  padding: 8px 10px;
   border-top: 1px solid #f3f4f6;
   display: flex;
   justify-content: space-between;
