@@ -66,6 +66,7 @@ alinesno:
     # 排除路径
     excludes:
       - /api/env/check/*
+      - /v1/api/infra/base/im/chat/displayImage/*
       - /api/lake/storage/*
       - /api/lake/ingestion/*
       - /sso/**
@@ -106,7 +107,7 @@ dromara:
         end-point: ${iceberg.minio.endpoint}
         bucket-name: ${iceberg.storage-bucket}-file  # 用于文件存储
         domain: ${iceberg.minio.endpoint}
-        base-path: / # 基础路径
+        base-path: /attachments # 基础路径
     aliyun-oss:
       - platform: aliyun-oss # 存储平台标识
         enable-storage: true  # 启用存储
@@ -115,4 +116,4 @@ dromara:
         bucket-name: ${iceberg.storage-bucket}-file # 用于文件存储
         end-point: ${iceberg.oss.endpoint}
         domain: ${iceberg.oss.endpoint}
-        base-path:  # 基础路径
+        base-path: /attachments # 基础路径
