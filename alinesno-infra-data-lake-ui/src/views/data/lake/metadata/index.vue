@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!-- 类型数据 -->
-      <el-col :span="5" :xs="24">
+      <el-col :span="6" :xs="24">
         <!-- 添加node-click事件监听 -->
         <MetaSidebarPanel 
           ref="metaSidebarPanelRef" 
@@ -11,7 +11,7 @@
       </el-col>
 
       <!-- 元数据信息 -->
-      <el-col :span="19" :xs="20">    
+      <el-col :span="18" :xs="20">
         <MetaMainPanel 
           @refreshSidebar="refreshSidebar"
           ref="metaMainPanelRef" 
