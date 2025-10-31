@@ -22,6 +22,12 @@
 			<version>${revision}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>com.alinesno.infra.smart</groupId>
+            <artifactId>alinesno-infra-data-lake-adapter</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
 		<dependency>
 			<groupId>com.alinesno.infra.common</groupId>
 			<artifactId>alinesno-infra-common-web-api</artifactId>
@@ -39,7 +45,7 @@
 			<artifactId>alinesno-infra-common-extend-datascope</artifactId>
 			<version>${alinesno.infra.common.version}</version>
 		</dependency>
-		<!-- 扩展引入_end -->
+        <!-- 扩展引入_end -->
 
 	</dependencies>
 
