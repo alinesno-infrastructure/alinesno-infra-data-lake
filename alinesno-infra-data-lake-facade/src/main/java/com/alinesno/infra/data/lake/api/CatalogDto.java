@@ -2,6 +2,7 @@ package com.alinesno.infra.data.lake.api;
 
 import com.alinesno.infra.common.facade.base.BaseDto;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,4 +23,11 @@ public class CatalogDto extends BaseDto {
 
     @Size(max = 50, message = "图标标识长度不能超过50个字符")
     private String icon;
+
+    @NotBlank(message = "图标标识不能为空")
+    private String catalogIcon ;
+
+    @NotNull(message = "所属域不能为空")
+    private Long domainId ;
+
 }
