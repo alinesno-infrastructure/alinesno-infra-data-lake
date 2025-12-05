@@ -2,10 +2,10 @@
   <div class="container">
 
     <el-row>
-      <el-col :span="4">
+      <el-col :span="3">
         <SideTypePanel ref="sideTypePanelRef" @selectType="selectType" />
       </el-col>
-      <el-col :span="20">
+      <el-col :span="21">
 
         <!-- 页面标题和筛选器 -->
         <div class="header-actions-row">
@@ -193,7 +193,7 @@ onMounted(() => {
 .container {
   width: 100%;
   padding: 10px;
-  background: #fff;
+  background: #fafafa;
   min-height: calc(100vh - 40px);
 }
 
@@ -290,7 +290,7 @@ onMounted(() => {
          position: relative;
          width: 60px;
          height: 60px;
-         border-radius: 10px;
+         border-radius: 50%;
          overflow: hidden;
          cursor: pointer;
          img {
