@@ -1,7 +1,6 @@
 # 轻量级数据湖架构 (alinesno-infra-data-lake-adapter)
 
 参考建设[阿里云数据湖](https://help.aliyun.com/zh/dlf/?spm=a2c4g.11186623.0.0.23a22d44uNgj7d)
-部署Trino:[Trino](https://blog.csdn.net/u013008898/article/details/129904695)
 
 ## 概述
 
