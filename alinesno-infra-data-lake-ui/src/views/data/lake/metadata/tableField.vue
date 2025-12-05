@@ -117,8 +117,10 @@ const props = defineProps({
 
 <style scoped lang="scss">
 .table-metadata-container {
-  background-color: #fff;
-  border-radius: 4px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   
   h3 {
     margin: 0 0 16px 0;
