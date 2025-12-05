@@ -94,28 +94,36 @@ public class CatalogTableSyncJob {
                 }
 
                 for (Object row : rows) {
-                    final long catalogId;
+                    long catalogId;
                     if (row instanceof Number) {
                         catalogId = ((Number) row).longValue();
                     } else {
                         // 有时 selectObjs 返回 Map 或其它，做安全转换
-                        catalogId = Long.parseLong(String.valueOf(row));
+                        if(row != null){
+                            catalogId = Long.parseLong(String.valueOf(row));
+                        } else {
+                            catalogId = 0;
+                        }
                     }
 
                     // 提交任务，单个 catalog 的异常不会影响其他任务
-                    Future<?> future = executor.submit(() -> {
-                        try {
-                            log.info("开始同步 catalogId={}", catalogId);
-                            // 这里只调用 service 的方法（方法内部负责具体同步与分页处理）
-                            catalogTableService.syncTableStructure(catalogId);
-                            log.info("完成同步 catalogId={}", catalogId);
-                        } catch (Exception ex) {
-                            log.error("同步 catalogId={} 失败", catalogId, ex);
-                            // 这里可以考虑重试策略或告警
-                        }
-                    });
 
-                    allFutures.add(future);
+                    if(catalogId > 0){
+                        Future<?> future = executor.submit(() -> {
+                            try {
+                                log.info("开始同步 catalogId={}", catalogId);
+                                // 这里只调用 service 的方法（方法内部负责具体同步与分页处理）
+                                catalogTableService.syncTableStructure(catalogId);
+                                log.info("完成同步 catalogId={}", catalogId);
+                            } catch (Exception ex) {
+                                log.error("同步 catalogId={} 失败", catalogId, ex);
+                                // 这里可以考虑重试策略或告警
+                            }
+                        });
+
+                        allFutures.add(future);
+                    }
+
                 }
 
                 if (rows.size() < pageSize) {
