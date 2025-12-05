@@ -679,7 +679,7 @@ $radius-xl: 12px;
 
 // 容器样式
 .app-container {
-  background: #fff;
+  background: #fafafa;
   padding: 10px;
   box-sizing: border-box;
 }
