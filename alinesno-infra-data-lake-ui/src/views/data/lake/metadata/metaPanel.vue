@@ -4,17 +4,15 @@
     <header class="header">
       <div class="path-nav">
         <button class="back-btn" @click="handleBack">
-          <i :class="currentCatalog?.icon"></i>
+          <div class="catalog-panel-icon" v-if="currentCatalog?.catalogIcon">
+            <img :src="imagePath(currentCatalog.catalogIcon)" />
+           </div>
         </button>
         <span class="path-text"> {{ currentCatalog?.catalogName }} 
 
           <el-button type="primary" text bg @click="handleCopy(currentCatalog?.id)" >
               标识:{{ currentCatalog?.id }} &nbsp; <i class="fa-solid fa-copy"></i>
           </el-button>
-
-          <!-- <el-button type="primary" text bg @click="handleCopy(currentCatalog?.id)" >
-              目录:{{ 'database_' + currentCatalog?.id }} &nbsp; <i class="fa-solid fa-copy"></i>
-          </el-button> -->
 
          </span>
       </div>
@@ -63,13 +61,6 @@
       </button>
       <button 
         class="tab" 
-        :class="{ active: activeTab === 'permissions' }"
-        @click="activeTab = 'permissions'"
-      >
-        权限
-      </button>
-      <button 
-        class="tab" 
         :class="{ active: activeTab === 'storage' }"
         @click="activeTab = 'storage'"
       >
@@ -82,6 +73,17 @@
       >
         资源概览
       </button>
+
+      <!--
+      <button 
+        class="tab" 
+        :class="{ active: activeTab === 'permissions' }"
+        @click="activeTab = 'permissions'"
+      >
+        权限
+      </button>
+      -->
+
     </div>
     
     <!-- 内容区域 -->
@@ -131,33 +133,33 @@
               </div>
             </div>
 
-            <!-- <div class="info-item" v-for="(item, index) in catalogInfo" :key="index">
-              <div class="info-label">{{ item.label }}</div>
-              <div class="info-value">
-                <span class="info-value-text">
-                  {{ item.value }}
-                </span>
-                <el-button v-if="item.copy == true" type="info" text bg @click="handleCopy(item.copyText?item.copyText:item.value)"> 
-                  <i class="fa-solid fa-copy"></i>
-                </el-button>
-              </div>
-            </div> -->
-
           </div>
         </section>
         
         <!-- 其他标签内容区域 -->
-        <section class="other-section" v-else>
+        <!-- <section class="other-section" v-else>
           <h2 class="section-title">{{ tabTitles[activeTab] }}</h2>
           <div class="empty-state">
             此标签页的内容将在这里显示
           </div>
-        </section>
+        </section> -->
 
         <!-- 显示Fieldg列表-->
         <TableMetadata v-if="currentCatalogTableFields && activeTab === 'details'" :fields="currentCatalogTableFields" />
       </div>
+
+      <!-- 存储概览 -->
+      <StorageOverview class="storage-section" v-if="activeTab === 'storage'" />
+
+      <!-- 资源概览 -->
+      <ResourceOverview class="resource-section" v-if="activeTab === 'resources'" />
+
+      <!-- 权限信息 
+      <PowerInfo class="permission-section" v-if="activeTab === 'permissions'" /> 
+       -->
+
     </el-scrollbar>
+
     
     <!-- 新建表/目录对话框 (使用el-dialog) -->
     <el-dialog
@@ -270,7 +272,11 @@ import {
 
 import CreateTableBtn from "./createTable.vue"
 import TableMetadata from './tableField.vue';
-// import CreateTable from './createTable.vue';
+
+// 组件
+import StorageOverview from './tabs/storageOverview.vue';
+import ResourceOverview from './tabs/resourceOverview.vue';
+import PowerInfo from './tabs/powerInfo.vue';
 
 const emit = defineEmits(['refreshSidebar']);
 
@@ -697,13 +703,13 @@ defineExpose({
 
 // 顶部区域样式
 .header {
-  padding: 8px 16px;
+  padding: 8px 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 5px;
   background: #fafafa;
-  margin-bottom: 16px;
+  margin-bottom: 6px;
   border-bottom: 0px solid #eee;
 
   .path-nav {
@@ -755,14 +761,15 @@ defineExpose({
 
 // 标签栏样式
 .tabs {
-  background-color: white;
+  background-color: #fff;
   display: flex;
   overflow-x: auto;
-  border-bottom: 1px solid #eee;
   margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
 
   .tab {
-    padding: 16px 24px;
+    padding: 10px 24px;
     border: none;
     background: none;
     font-size: 14px;
@@ -797,16 +804,15 @@ defineExpose({
   margin-bottom: 16px;
   color: #333;
   padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 0px solid #f0f0f0;
 }
 
 // 基本信息板块
 .info-section {
-  background-color: white;
   border-radius: 8px;
   padding: 0px;
   margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
   .info-grid {
     display: grid;
@@ -1040,6 +1046,17 @@ defineExpose({
         display: none;
       }
     }
+  }
+}
+
+.catalog-panel-icon{
+  width: 30px;
+  height: 30px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
   }
 }
 </style>
