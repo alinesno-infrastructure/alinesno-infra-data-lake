@@ -2,7 +2,6 @@ package com.alinesno.infra.data.lake.storage.service;
 
 import com.alinesno.infra.common.facade.services.IBaseService;
 import com.alinesno.infra.data.lake.storage.entity.DownloadTokenEntity;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface DownloadTokenService extends IBaseService<DownloadTokenEntity> {
 
