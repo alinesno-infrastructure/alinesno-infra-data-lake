@@ -1,247 +1,262 @@
 <template>
-   <div class="app-container">
+  <div class="app-container">
     <div class="label-title">
-      <div class="tip">单点登陆配置</div>
-      <div class="sub-tip">根据企业和团队自定义单点登陆配置</div>
+      <div class="tip">数据湖平台配置</div>
+      <div class="sub-tip">Iceberg 元数据管理（MinIO / Spark 在后台固定）</div>
     </div>
-    <div class="form-container" >
+
+    <div class="form-container">
       <el-form
         :model="form"
         :rules="rules"
+        ref="formRef"
+        label-width="160px"
+        size="large"
         v-loading="loading"
-        ref="form"
-        label-width="180px"
         class="demo-form"
       >
-
-        <el-form-item label="品牌代码" prop="themeCode">
-          <el-input type="input" show-word-limit v-model="form.themeCode" readonly placeholder="请输入主题代码">
-            <el-button slot="append" @click="configTheme()" icon="el-icon-edit">配置品牌</el-button>
-          </el-input>
+        <!-- 展示后台固定的 MinIO / Spark 信息 -->
+        <div class="sub-section-title">系统信息（后台固定）</div>
+        <el-form-item label="MinIO Endpoint">
+          <el-input v-model="sysInfo.minioEndpoint" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="MinIO Bucket">
+          <el-input v-model="sysInfo.minioBucket" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="Spark Master">
+          <el-input v-model="sysInfo.sparkMaster" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="服务状态">
+          <el-tag :type="sysInfo.up ? 'success' : 'danger'">{{ sysInfo.up ? '正常' : '异常' }}</el-tag>
+          <span style="margin-left:12px;color:#666;">（来自后台：若需要修改请在运维端调整）</span>
         </el-form-item>
 
-        <el-form-item label="登录框版本选择" prop="loginStyle">
-          <el-row>
-            <el-col :span="7" v-for="(o, index) in loginStyle" :key="index" :offset="index > 0 ? 1 : 0">
+        <!-- 可配置项：Iceberg / Catalog / Metastore -->
+        <div class="sub-section-title">元数据配置</div>
 
-              <el-card :body-style="{ padding: '0px !important' }" :class="form.loginStyle == o.id?'select-card':''" shadow="never">
-                <img :src="'http://data.linesno.com/icons/login/style-0'+(index+1)+'.png'" class="image">
-                <div style="padding: 14px;">
-                  <span>{{ o.desc }}</span>
-                  <div class="bottom clearfix">
-                    <el-button @click="selectStyle(o)" type="text" class="button">选择</el-button>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
+        <el-form-item label="Catalog 类型" prop="catalogType">
+          <el-select v-model="form.catalogType" placeholder="选择 Catalog 类型">
+            <el-option label="Iceberg (HadoopCatalog)" value="hadoop"></el-option>
+            <el-option label="Iceberg (HiveCatalog)" value="hive"></el-option>
+            <el-option label="自定义" value="custom"></el-option>
+          </el-select>
         </el-form-item>
 
-        <el-form-item label="显示社会化登录">
-          <el-switch v-model="form.enableSociety"
-            :active-value="1"
-            :inactive-value="0"
-          ></el-switch>
+        <el-form-item label="默认数据库" prop="defaultDatabase">
+          <el-input v-model="form.defaultDatabase" placeholder="例如：default_db"></el-input>
         </el-form-item>
 
-        <el-form-item label="错误次数" prop="errorCount">
-          <el-input-number type="input" maxlength="500" :min="1" :max="10" show-word-limit v-model="form.errorCount" >
-              <template slot="append">次</template>
-          </el-input-number>
+        <el-form-item label="Warehouse 路径" prop="warehousePath">
+          <el-input v-model="form.warehousePath" placeholder="例如：s3a://bucket/warehouse/"></el-input>
         </el-form-item>
 
-        <el-form-item label="锁定时长" prop="lockTime">
-          <el-input-number type="input" maxlength="500" show-word-limit v-model="form.lockTime" >
-              <template slot="append">分钟</template>
-          </el-input-number>
+        <el-form-item label="Metastore 类型" prop="metastoreType">
+          <el-select v-model="form.metastoreType" placeholder="选择 Metastore">
+            <el-option label="无 (仅使用 Catalog)" value="none"></el-option>
+            <el-option label="Hive Metastore (Thrift)" value="hive"></el-option>
+          </el-select>
         </el-form-item>
 
-        <el-form-item label="显示忘记密码">
-          <el-switch v-model="form.enableFindPwd"
-            :active-value="1"
-            :inactive-value="0"
-          ></el-switch>
+        <el-form-item v-if="form.metastoreType === 'hive'" label="Thrift URI" prop="metastoreUri">
+          <el-input v-model="form.metastoreUri" placeholder="thrift://hive-metastore:9083"></el-input>
         </el-form-item>
 
-        <el-form-item label="默认首页" prop="defaultIndex">
-          <el-input type="input" maxlength="500" show-word-limit v-model="form.defaultIndex" placeholder="请输入默认首页"></el-input>
+        <el-form-item>
+          <el-button type="primary" @click="testMetastore" v-if="form.metastoreType === 'hive'">测试 Metastore</el-button>
+          <el-button type="info" @click="testCatalog">测试 Catalog</el-button>
         </el-form-item>
 
-        <el-form-item label="是否开启登陆验证码">
-          <el-switch v-model="form.enableValidate"
-            :active-value="1"
-            :inactive-value="0"
-          ></el-switch>
+        <div class="sub-section-title">运行时配置</div>
+
+        <el-form-item label="Catalog 刷新间隔(秒)" prop="catalogRefreshInterval">
+          <el-input-number v-model="form.catalogRefreshInterval" :min="10" :max="86400"></el-input-number>
+        </el-form-item>
+
+        <el-form-item label="开启访问鉴权">
+          <el-switch v-model="form.enableAuth" :active-value="1" :inactive-value="0"></el-switch>
+        </el-form-item>
+
+        <el-form-item label="备注">
+          <el-input type="textarea" v-model="form.note" rows="3" placeholder="备注或说明"></el-input>
         </el-form-item>
 
         <br/>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('form')">
-            保存
-          </el-button>
-          <el-button @click="resetForm">
-            重置
-          </el-button>
+          <el-button type="primary" @click="submitForm">保存</el-button>
+          <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref, onMounted, getCurrentInstance } from 'vue';
 
-//   import {
-//     addLoginSetting,
-//     updateLoginSetting,
-//     getCurrentConfig } from "@/api/business/OauthLoginSetting";
+const { proxy } = getCurrentInstance();
+const formRef = ref(null);
+const loading = ref(false);
 
-//   import ImageUpload from "alinesno-ui/packages/ImageUpload"
+// 系统信息（MinIO / Spark 后台固定，前端只展示）
+const sysInfo = reactive({
+  minioEndpoint: '',
+  minioBucket: '',
+  sparkMaster: '',
+  up: true,
+});
 
-  export default {
+// 可配置表单
+const form = reactive({
+  catalogType: 'hadoop',
+  defaultDatabase: 'default',
+  warehousePath: 's3a://bucket/warehouse/',
+  metastoreType: 'none',
+  metastoreUri: '',
+  catalogRefreshInterval: 60,
+  enableAuth: 0,
+  note: '',
+});
 
-   //  components:{
-   //    ImageUpload
-   //  },
-    data() {
-      return {
-        loginStyle:[
-          {id:'1' , icon:'asserts/images/style-01.png' , desc:'经典版本的登陆UI，提供更加流畅的交互体验'} ,
-          {id:'2' , icon:'asserts/images/style-02.png' , desc:'简洁版的登陆，优化登录注册页面设计，PC视觉更简洁'} ,
-          {id:'3' , icon:'asserts/images/style-03.png' , desc:'平台版本的登陆界面，大气简洁的登陆界面，更贴近平台化'} ,
-        ],
-        theme: null , 
-        form: {
-          themeCode: null , 
-          loginStyle:'1' ,
-          enableSociety: '1' ,
-          enableFindPwd: '1' ,
-          logoImg: '' ,
-          lockTime: 250 ,
-          errorCount: 5,
-          defaultIndex: '' , 
-          enableValidate: '1',
-        },
-        // 表单参数
-        rules: {
-          logoTitle: [
-            { required: true, message: "请输入登陆标题", trigger: "blur" },
-          ],
-          logoTitle: [
-            { required: true, message: "请输入登陆标题", trigger: "blur" },
-          ],
-          loginDescription: [
-            { required: true, message: "请输入登陆描述", trigger: "blur" },
-          ],
-          loginLogo: [
-            { required: true, message: "请至少上传一张Logo图", trigger: "blur" },
-          ],
-          logoBackgroun: [
-            { required: true, message: "请至少上传一张背景图", trigger: "blur" },
-          ],
-          defaultIndex: [
-            { required: true, message: "请输入默认主页", trigger: "blur" },
-            { type: 'url',message: "请输入正确的链接地址",trigger: 'blur'},
-          ],
-        },
-        currentSiteId: null,
-        // 遮罩层
-        loading: false ,
-      };
+const rules = {
+  catalogType: [{ required: true, message: '请选择 Catalog 类型', trigger: 'change' }],
+  warehousePath: [
+    { required: true, message: '请输入 Warehouse 路径', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (!value) return callback(new Error('请输入 Warehouse 路径'));
+        callback();
+      },
+      trigger: 'blur',
     },
-    created(){
-      // this.getSetting();
+  ],
+  metastoreUri: [
+    {
+      validator: (rule, value, callback) => {
+        if (form.metastoreType === 'hive' && !value) {
+          return callback(new Error('请输入 Metastore Thrift URI'));
+        }
+        callback();
+      },
+      trigger: 'blur',
     },
-    methods: {
-      // getSetting(){
-      //   getCurrentConfig().then(response => {
+  ],
+  sparkMaster: [], // Spark 在后台固定，前端不编辑
+};
 
-      //     if(response.theme.id != null){
-      //       this.form = response.data ;
-      //       this.theme = response.theme ;
-            
-      //       if(this.theme){
-      //         this.form.themeCode = response.theme.themeCode ;
-      //       }
+// 消息
+function msgSuccess(text) { proxy?.$message?.({ message: text, type: 'success' }); }
+function msgError(text) { proxy?.$message?.({ message: text, type: 'error' }); }
 
-      //     }
-      //   })
-      // },
-      // uploadImg(data){
-      //   console.log('data = ' + data) ;
-      // } , 
-      // selectStyle(item){
-      //   this.form.loginStyle = item.id;  
-      //   console.log('item = ' + item.id) ;
-      // } ,
-      // copySuccess() {
-      //   this.$message.success("复制成功")
-      // },
-      // configTheme(){
-      //   this.$router.push('/business/theme/settings') ;
-      // },
-      // submitForm(formName) {
-      //   this.$refs[formName].validate((valid) => {
-      //     if (valid) {
-      //       this.loading = true ;
-      //       if (this.form.id != null) {
-      //         updateLoginSetting(this.form).then(response => {
-      //           this.msgSuccess("修改成功");
-      //           this.loading = false ;
-      //         });
-      //       } else {
-      //         addLoginSetting(this.form).then(response => {
-      //           this.msgSuccess("新增成功");
-      //           this.loading = false ;
-      //         });
-      //       }
-      //     }
-      //   });
-      // },
-      // resetForm() {
-      //   this.$refs["form"].resetFields();
-      //   this.getSetting();
-      // }
-    },
-  };
+// 加载当前配置与后台固定信息
+async function loadConfig() {
+  loading.value = true;
+  try {
+    // TODO: 替换为真实接口
+    // const resp = await axios.get('/api/datalake/config');
+    // const sys = await axios.get('/api/datalake/system-info');
+    // 示意数据：
+    await new Promise(r => setTimeout(r, 300));
+    // 从后端读取的示例（请替换）
+    const respData = {
+      catalogType: 'hadoop',
+      defaultDatabase: 'default',
+      warehousePath: 's3a://iceberg-bucket/warehouse/',
+      metastoreType: 'none',
+      catalogRefreshInterval: 60,
+      enableAuth: 0,
+      note: '示例配置',
+    };
+    const sys = {
+      minioEndpoint: 'http://minio.prod.company.com',
+      minioBucket: 'iceberg-prod',
+      sparkMaster: 'spark://spark-master:7077',
+      up: true,
+    };
+
+    // 赋值到表单与系统信息
+    Object.assign(form, respData);
+    Object.assign(sysInfo, sys);
+  } catch (err) {
+    msgError('加载配置失败：' + (err.message || err));
+  } finally {
+    loading.value = false;
+  }
+}
+
+// 测试 Metastore（如果启用）
+async function testMetastore() {
+  if (form.metastoreType !== 'hive') {
+    msgSuccess('未配置 Hive Metastore，无需测试');
+    return;
+  }
+  loading.value = true;
+  try {
+    // TODO: 调用后端测试接口：POST /api/datalake/test-metastore { uri }
+    await new Promise(r => setTimeout(r, 500));
+    msgSuccess('Metastore 连接成功');
+  } catch (err) {
+    msgError('Metastore 测试失败：' + (err.message || err));
+  } finally {
+    loading.value = false;
+  }
+}
+
+// 测试 Catalog（校验 warehouse 等）
+async function testCatalog() {
+  loading.value = true;
+  try {
+    // TODO: 调用后端测试接口：POST /api/datalake/test-catalog { catalogType, warehousePath }
+    await new Promise(r => setTimeout(r, 500));
+    msgSuccess('Catalog 测试通过');
+  } catch (err) {
+    msgError('Catalog 测试失败：' + (err.message || err));
+  } finally {
+    loading.value = false;
+  }
+}
+
+// 保存配置（只保存元数据层配置）
+function submitForm() {
+  formRef.value.validate(async (valid) => {
+    if (!valid) {
+      msgError('请先修正表单错误');
+      return;
+    }
+    loading.value = true;
+    try {
+      // TODO: 替换为后端保存接口：POST /api/datalake/config
+      // await axios.post('/api/datalake/config', form);
+      await new Promise(r => setTimeout(r, 700));
+      msgSuccess('配置已保存');
+      // 可再次加载以保证与后台同步
+      await loadConfig();
+    } catch (err) {
+      msgError('保存失败：' + (err.message || err));
+    } finally {
+      loading.value = false;
+    }
+  });
+}
+
+function resetForm() {
+  formRef.value.resetFields();
+  loadConfig();
+}
+
+onMounted(() => {
+  loadConfig();
+});
 </script>
 
 <style scoped lang="scss">
-  .form-container {
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-  }
-
-  .label-title {
-    text-align: center;
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-
-    .tip {
-      padding-bottom: 10px;
-      font-size: 26px;
-      font-weight: bold;
-    }
-
-    .sub-tip {
-      font-size: 13px;
-      text-align: center;
-      padding: 10px;
-    }
-  }
-
-  .image{
-    width:100%;
-    height: 120px ;
-  }
-
-  .select-card {
-    border: 1px solid rgb(0, 91, 212) ;
-  }
+.form-container {
+  max-width: 980px;
+  margin: 20px auto;
+}
+.label-title { text-align: center; margin: 10px auto 20px; }
+.tip { font-size: 26px; font-weight: bold; padding-bottom: 10px; }
+.sub-tip { color: #666; font-size: 13px; padding: 8px; }
+.sub-section-title { margin: 18px 0 6px; font-weight: 600; color: #333; }
+.demo-form { background: #fff; padding: 16px; border-radius: 6px; }
 </style>
-
-
