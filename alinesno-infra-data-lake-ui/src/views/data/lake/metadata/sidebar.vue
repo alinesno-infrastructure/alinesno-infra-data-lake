@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container sidebar-meta-container">
     <div class="head-action-btn">
       <span>
         域目录 
@@ -146,9 +146,14 @@ defineExpose({
   padding: 20px;
 }
 
+.sidebar-meta-container {
+  background-color: #fff !important;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
 .head-container {
-  width: 100%;
-  max-width: 600px;
+  width: 100%; 
 }
 :deep(.el-tree-node__content) {
     height: auto !important;
