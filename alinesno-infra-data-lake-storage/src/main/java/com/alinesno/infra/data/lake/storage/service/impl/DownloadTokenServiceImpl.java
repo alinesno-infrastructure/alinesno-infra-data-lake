@@ -5,7 +5,6 @@ import com.alinesno.infra.data.lake.storage.entity.DownloadTokenEntity;
 import com.alinesno.infra.data.lake.storage.mapper.DownloadTokenMapper;
 import com.alinesno.infra.data.lake.storage.service.DownloadTokenService;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
