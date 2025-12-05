@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!-- 类型数据 -->
-      <el-col :span="9" :xs="24">
+      <el-col :span="8" :xs="24">
         <!-- 添加node-click事件监听 -->
         <MetaSidebarPanel 
           ref="metaSidebarPanelRef" 
@@ -11,7 +11,7 @@
       </el-col>
 
       <!-- 元数据信息 -->
-      <el-col :span="15" :xs="20">
+      <el-col :span="16" :xs="20">
         <MetaMainPanel 
           @refreshSidebar="refreshSidebar"
           ref="metaMainPanelRef" 
@@ -48,7 +48,7 @@ const refreshSidebar = () => {
 
 <style lang="scss" scoped>
 .app-container {
-  background-color: #fff;
+  background-color: #fafafa;
   padding: 10px;
 }
 </style>
