@@ -52,38 +52,15 @@
     
     <!-- 标签栏 -->
     <div class="tabs">
-      <button 
-        class="tab" 
-        :class="{ active: activeTab === 'details' }"
-        @click="activeTab = 'details'"
-      >
+      <button class="tab" :class="{ active: activeTab === 'details' }" @click="activeTab = 'details'">
         详细信息
       </button>
-      <button 
-        class="tab" 
-        :class="{ active: activeTab === 'storage' }"
-        @click="activeTab = 'storage'"
-      >
-        存储概览
-      </button>
-      <button 
-        class="tab" 
-        :class="{ active: activeTab === 'resources' }"
-        @click="activeTab = 'resources'"
-      >
+      <button class="tab" :class="{ active: activeTab === 'resources' }" @click="activeTab = 'resources'">
         资源概览
       </button>
-
-      <!--
-      <button 
-        class="tab" 
-        :class="{ active: activeTab === 'permissions' }"
-        @click="activeTab = 'permissions'"
-      >
-        权限
+      <button class="tab" :class="{ active: activeTab === 'storage' }" @click="activeTab = 'storage'">
+        存储概览
       </button>
-      -->
-
     </div>
     
     <!-- 内容区域 -->
@@ -148,15 +125,11 @@
         <TableMetadata v-if="currentCatalogTableFields && activeTab === 'details'" :fields="currentCatalogTableFields" />
       </div>
 
+      <!-- 资源概览 -->
+      <ResourceOverview class="resource-section" :currentCatalogTable="currentCatalogTable" v-if="activeTab === 'resources'" />
+
       <!-- 存储概览 -->
       <StorageOverview class="storage-section" v-if="activeTab === 'storage'" />
-
-      <!-- 资源概览 -->
-      <ResourceOverview class="resource-section" v-if="activeTab === 'resources'" />
-
-      <!-- 权限信息 
-      <PowerInfo class="permission-section" v-if="activeTab === 'permissions'" /> 
-       -->
 
     </el-scrollbar>
 
