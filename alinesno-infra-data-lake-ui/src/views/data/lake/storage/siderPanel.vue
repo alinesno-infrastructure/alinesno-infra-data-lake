@@ -156,7 +156,7 @@ const handleClick = (code) => {
 
 <style lang="scss" scoped>
 .side-type-container {
-    padding: 15px;
+    padding: 5px;
     width: 220px;
     position: absolute;
     height: 100%;
@@ -164,9 +164,10 @@ const handleClick = (code) => {
     overflow-y: auto; /* 增加滚动条，避免内容过多时溢出 */
 
     .title {
-        font-size: 18px;
+        font-size: 14px;
         margin-bottom: 10px;
-        font-weight: bold;
+        padding-left: 15px;
+        color: #888;
     }
 
     .type-list {
@@ -178,7 +179,7 @@ const handleClick = (code) => {
         div {
             padding: 8px 10px;
             cursor: pointer;
-            border-radius: 5px;  
+            border-radius: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -192,8 +193,8 @@ const handleClick = (code) => {
 
             &:hover,
             &.active {
-                background-color: var(--el-color-primary-light-8);
-                color: var(--el-color-primary);
+                background-color: var(--el-color-info-light-8);
+                color: var(--el-color-info);
             }
         }
     }
