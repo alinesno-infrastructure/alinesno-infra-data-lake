@@ -255,7 +255,7 @@ onMounted(() => {
   display: grid;
   margin-top: 0px;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 15px;
   margin-bottom: 40px;
 }
 
@@ -273,7 +273,7 @@ onMounted(() => {
 
 .catalog-card {
   background-color: white;
-  border-radius: 8px;
+  border-radius: 15px;
   overflow: hidden;
   border: 1px solid rgba(6, 7, 9, .1);
   transition: all 0.3s ease;
@@ -290,7 +290,7 @@ onMounted(() => {
          position: relative;
          width: 60px;
          height: 60px;
-         border-radius: 50%;
+         border-radius: 20px;
          overflow: hidden;
          cursor: pointer;
          img {
@@ -390,7 +390,7 @@ onMounted(() => {
 }
 
 .catalog-footer {
-  padding: 8px 10px;
+  padding: 10px;
   border-top: 1px solid #f3f4f6;
   display: flex;
   justify-content: space-between;
