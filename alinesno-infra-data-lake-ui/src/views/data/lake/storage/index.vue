@@ -738,6 +738,7 @@ $radius-xl: 12px;
     padding: 0px;
     border: 1px solid $border-color;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 15px;
 
     &:hover {
       box-shadow: $shadow-md;
@@ -782,7 +783,7 @@ $radius-xl: 12px;
   margin-bottom: 16px;
   padding: 6px ; 
   background: $card-bg;
-  border-radius: $radius-md;
+  border-radius: $radius-xl;
   border: 1px solid $border-color;
   
   .breadcrumb-item {
