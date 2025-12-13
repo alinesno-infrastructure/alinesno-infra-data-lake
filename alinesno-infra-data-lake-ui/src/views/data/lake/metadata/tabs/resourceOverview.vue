@@ -3,12 +3,14 @@
     <div class="header">
       <div class="title title-group">
         <h2 class="section-title ">资源查询</h2>
-        <p class="subtitle">编写 SQL 查询表数据（默认分页查询全部）</p>
+        <p class="subtitle">编写 SQL 查询表数据（默认分页查询前1000条）</p>
       </div>
       <div class="actions">
+        <!--
         <el-button size="default" @click="resetSql">重置SQL</el-button>
-        <el-button size="default" type="primary" @click="runQuery(true)" :loading="loading">运行</el-button>
         <el-button size="default" @click="copySql">复制SQL</el-button>
+        -->
+        <el-button size="default" type="primary" @click="runQuery(true)" :loading="loading">运行</el-button>
         <el-button size="default" @click="downloadCsv" :disabled="!rows.length">导出CSV</el-button>
         <el-button size="default" type="warning" @click="explainSql" :loading="explaining">Explain</el-button>
       </div>
@@ -16,9 +18,8 @@
 
     <div class="editor">
       <el-input
-        type="textarea"
         v-model="sqlText"
-        :rows="4"
+        size="large"
         resize="none"
         placeholder="请输入 SQL（如：SELECT * FROM schema.table WHERE ...）"
         clearable
@@ -129,10 +130,13 @@ const currentTableLabel = computed(() => {
 // 根据 currentCatalogTable 构造默认 SQL
 function buildDefaultSql() {
   const t = props.currentCatalogTable;
-  if (t && (t.tableName || t.name)) {
-    const catalog = t.catalogName ? `${t.catalogName}.` : '';
-    const schema = (t.schemaName || t.database) ? `${t.schemaName || t.database}.` : '';
-    const table = t.tableName || t.name;
+
+  console.log('t = ' + JSON.stringify(t));
+
+  if (t && t.statistics && (t.databaseName || t.tableName)) {
+    const catalog = t.catalogName ? `${t.catalogName}.` : '' ;
+    const schema = t.statistics.databaseName ? `${t.statistics.databaseName}.` : '' ;
+    const table = t.statistics.tableName ;
     return `SELECT * FROM ${catalog}${schema}${table} LIMIT ${pageSize.value} OFFSET ${(page.value - 1) * pageSize.value}`;
   }
   return '';
@@ -165,7 +169,12 @@ watch(() => props.currentCatalogTable, (newVal) => {
   page.value = 1;
   resetSql();
   if (newVal && (newVal.tableName || newVal.name)) {
-    runQuery(true);
+      sqlText.value = buildDefaultSql();
+
+      if(sqlText.value){
+        console.log('sqlText = ' + sqlText.value) ;
+        runQuery();
+      }
   } else {
     rows.value = [];
     columns.value = [];
