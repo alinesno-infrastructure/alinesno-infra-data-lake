@@ -84,14 +84,15 @@ handleListEnabledDomains();
 
 <style lang="scss" scoped>
 .side-type-container {
-    padding: 15px;
+    padding: 5px;
     width: 100%;
     height: 100%;
 
     .title {
-        font-size: 18px;
+        font-size: 14px;
         margin-bottom: 10px;
-        font-weight: bold;
+        padding-left: 15px;
+        color: #888;
     }
 
     .type-list {
@@ -103,7 +104,7 @@ handleListEnabledDomains();
         div {
             padding: 8px 15px;
             cursor: pointer;
-            border-radius: 5px;  
+            border-radius: 15px;
 
             i{
                 color: #1d75b0;
@@ -112,8 +113,8 @@ handleListEnabledDomains();
 
             &:hover,
             &.active {
-                background-color: var(--el-color-primary-light-8);
-                color: var(--el-color-primary);
+                background-color: var(--el-color-info-light-8);
+                color: var(--el-color-info);
             }
         }
     }
